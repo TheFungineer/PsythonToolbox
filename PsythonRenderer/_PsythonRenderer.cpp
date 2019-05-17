@@ -1,61 +1,58 @@
 #include <Python.h>
 #include <cstdio>
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
 
 //-----------------------------------------------------------------------------
-static PyObject *hello_example(PyObject *self, PyObject *args)
+static PyObject* initialize(PyObject *self, PyObject *args)
 {
-  // Unpack a string from the arguments
-  const char *strArg;
-  if (!PyArg_ParseTuple(args, "s", &strArg))
-    return NULL;
-
-  // Print message and return None
-  PySys_WriteStdout("Hello, %s!\n", strArg);
-  Py_RETURN_NONE;
+	PySys_WriteStdout("PsythonRenderer - Initializing...\n");
+	SDL_SetMainReady();
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+		PySys_WriteStdout("PsythonRenderer - Failed to initialize, %s!\n", SDL_GetError());
+		Py_RETURN_FALSE;
+	}
+	PySys_WriteStdout("PsythonRenderer - Initialized\n");
+	Py_RETURN_TRUE;
 }
 
 //-----------------------------------------------------------------------------
-static PyObject *elevation_example(PyObject *self, PyObject *args)
+static PyObject* dispose(PyObject *self, PyObject *args)
 {
-  // Return an integer
-  return PyLong_FromLong(21463L);
+	PySys_WriteStdout("PsythonRenderer - Disposing...\n");
+	SDL_Quit();
+	PySys_WriteStdout("PsythonRenderer - Disposed\n");
+	Py_RETURN_NONE;
 }
 
 //-----------------------------------------------------------------------------
 static PyMethodDef PsythonRenderer_methods[] = {
-  {
-    "hello",
-    hello_example,
-    METH_VARARGS,
-    "Prints back 'Hello <param>', for example example: hello.hello('you')"
-  },
+	{
+		"initialize",
+		initialize,
+		METH_VARARGS,
+		"Start-Up PsythonRenderer and acquire resources"
+	},
 
-  {
-    "elevation",
-    elevation_example,
-    METH_VARARGS,
-    "Returns elevation of Nevado Sajama."
-  },
-  {NULL, NULL, 0, NULL}        /* Sentinel */
+	{
+		"dispose",
+		dispose,
+		METH_VARARGS,
+		"Tear-down PsythonRenderer and release resources"
+	},
+	{NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 //-----------------------------------------------------------------------------
-#if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC init_hello(void)
-{
-  (void) Py_InitModule("_PsythonRenderer", PsythonRenderer_methods);
-}
-#else /* PY_MAJOR_VERSION >= 3 */
 static struct PyModuleDef PsythonRenderer_module_def = {
-  PyModuleDef_HEAD_INIT,
-  "_PsythonRenderer",
-  "Internal \"_PsythonRenderer\" module",
-  -1,
-  PsythonRenderer_methods
+	PyModuleDef_HEAD_INIT,
+	"_PsythonRenderer",
+	"Internal \"_PsythonRenderer\" module",
+	-1,
+	PsythonRenderer_methods
 };
 
 PyMODINIT_FUNC PyInit__PsythonRenderer(void)
 {
-  return PyModule_Create(&PsythonRenderer_module_def);
+	return PyModule_Create(&PsythonRenderer_module_def);
 }
-#endif /* PY_MAJOR_VERSION >= 3 */
