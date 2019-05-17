@@ -275,3 +275,8 @@ Temporary Items
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
+
+# Except Our Own Libraries Held in Repo for build simplicity
+!PsythonRenderer/3rdparty/**/lib
+!PsythonRenderer/3rdparty/**/*.dll
+!PsythonRenderer/3rdparty/**/*.lib
