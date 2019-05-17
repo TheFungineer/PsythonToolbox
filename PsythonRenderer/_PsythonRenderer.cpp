@@ -3,8 +3,9 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 
-//-----------------------------------------------------------------------------
-static PyObject* initialize(PyObject *self, PyObject *args)
+namespace {
+	
+PyObject* initialize_(PyObject *self, PyObject *args)
 {
 	PySys_WriteStdout("PsythonRenderer - Initializing...\n");
 	SDL_SetMainReady();
@@ -16,8 +17,7 @@ static PyObject* initialize(PyObject *self, PyObject *args)
 	Py_RETURN_TRUE;
 }
 
-//-----------------------------------------------------------------------------
-static PyObject* dispose(PyObject *self, PyObject *args)
+PyObject* dispose_(PyObject *self, PyObject *args)
 {
 	PySys_WriteStdout("PsythonRenderer - Disposing...\n");
 	SDL_Quit();
@@ -25,32 +25,40 @@ static PyObject* dispose(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
-//-----------------------------------------------------------------------------
-static PyMethodDef PsythonRenderer_methods[] = {
+PyMethodDef PsythonRendererMethods[] = {
 	{
 		"initialize",
-		initialize,
+		initialize_,
 		METH_VARARGS,
 		"Start-Up PsythonRenderer and acquire resources"
 	},
 
 	{
 		"dispose",
-		dispose,
+		dispose_,
 		METH_VARARGS,
 		"Tear-down PsythonRenderer and release resources"
 	},
 	{NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-//-----------------------------------------------------------------------------
-static struct PyModuleDef PsythonRenderer_module_def = {
+struct PyModuleDef PsythonRenderer_module_def = {
 	PyModuleDef_HEAD_INIT,
 	"_PsythonRenderer",
 	"Internal \"_PsythonRenderer\" module",
 	-1,
-	PsythonRenderer_methods
+	PsythonRendererMethods
 };
+
+// TODO:
+//	-Mouse & Keyboard entities, or all in PsythonRenderer
+//	-window entity & RenderDevice -> [chooseGpu()?], setVsync, present()
+//	-pumpNativeEvents
+//	-un/registerNativeEventsHandlers
+
+} // anonymous namespace
+
+/*////////////////////////////*/
 
 PyMODINIT_FUNC PyInit__PsythonRenderer(void)
 {
