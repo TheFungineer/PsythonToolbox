@@ -1,3 +1,9 @@
+##
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT
+##
+
 from ._PsythonRenderer import initialize
 from ._PsythonRenderer import dispose
 from ._PsythonRenderer import createWindow
