@@ -16,20 +16,5 @@ if os.name == 'posix' :
 		osxSdlDllPath = "/usr/local/lib/"
 		ctypes.cdll.LoadLibrary(osxSdlDllPath + "libsdl2.dylib")
 	
-from ._PsythonRenderer import initialize
-from ._PsythonRenderer import dispose
-from ._PsythonRenderer import createWindow
-from ._PsythonRenderer import pumpNativeEvents
-from ._PsythonRenderer import unregisterNativeEventCallback
-from ._PsythonRenderer import registerOnQuitRequested
-from ._PsythonRenderer import registerOnWindowCloseRequested
-from ._PsythonRenderer import registerOnWindowVisibilityChanged
-from ._PsythonRenderer import registerOnWindowFocusChanged
-from ._PsythonRenderer import registerOnWindowSizeChanged
-from ._PsythonRenderer import registerOnMouseMoved
-from ._PsythonRenderer import registerOnMouseButtonDown
-from ._PsythonRenderer import registerOnMouseButtonUp
-from ._PsythonRenderer import registerOnKeyDown
-from ._PsythonRenderer import registerOnKeyUp
-from ._PsythonRenderer import pumpNativeEvents
+from ._PsythonRenderApp import PsythonRenderApp
 from ._PsythonMouseButtons import PsythonMouseButtons

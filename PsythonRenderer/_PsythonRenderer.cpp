@@ -8,6 +8,7 @@ namespace {
 // Internal Variables
 	
 std::unique_ptr<psy::PsythonRendererCore> gPsythonRendererCore;
+uint32_t gModuleInitializationRefCount = 0;
 
 /*//////////////////////////////*/
 
@@ -134,30 +135,6 @@ PyObject* registerNativeEventCallback_(int32_t inEventType, PyObject* inArgs)
 	return PyLong_FromLong(lId);
 }
 
-void cleanup_(void* inSelf = nullptr) 
-{
-	if (gPsythonRendererCore) {
-		PySys_WriteStdout("PsythonRenderer - Disposing...\n");
-		size_t lListenersCount = gPsythonRendererCore->getListenerCount();
-		for (size_t i = 0; i < lListenersCount; ++i) {
-			int32_t lListenerId = gPsythonRendererCore->getListenerIdByIndex(i);
-			void* lContext = gPsythonRendererCore->getCallbackContext(lListenerId);
-			if (lContext) {
-				Py_DECREF(static_cast<PyObject*>(lContext));
-			}
-		}
-		for (size_t i = 0; i < lListenersCount; ++i) {
-			int32_t lListenerId = gPsythonRendererCore->getListenerIdByIndex(i);
-			gPsythonRendererCore->removeListener(lListenerId);
-		}
-		PySys_WriteStdout("PsythonRenderer - Disposed\n");
-	}
-	gPsythonRendererCore.reset();
-	if (inSelf) {
-		PyObject_Free(inSelf);
-	}
-}
-
 /*/////////////////////////////////*/
 
 // Functions called directly by python
@@ -176,12 +153,10 @@ PyObject* unregisterNativeEventCallback_(PyObject* inSelf, PyObject* inArgs)
 		return NULL;
 	}
 	void* lContext = gPsythonRendererCore->getCallbackContext(lCallbackId);
-	if (!lContext) {
-		PyErr_SetString(PyExc_TypeError, "Can't remove requested callback id because it is not registered");
-        return NULL;
+	if (lContext) {
+		gPsythonRendererCore->removeListener(lCallbackId);
+		Py_DECREF(static_cast<PyObject*>(lContext));
 	}
-	gPsythonRendererCore->removeListener(lCallbackId);
-	Py_DECREF(static_cast<PyObject*>(lContext));
     Py_RETURN_NONE;
 }
 
@@ -237,21 +212,51 @@ PyObject* registerOnKeyUp_(PyObject*, PyObject* inArgs)
 
 PyObject* initialize_(PyObject*, PyObject*)
 {
-	PySys_WriteStdout("PsythonRenderer - Initializing...\n");
-	if (!gPsythonRendererCore) {
-		gPsythonRendererCore.reset(new (std::nothrow) psy::PsythonRendererCore);
+	if (gModuleInitializationRefCount++ == 0) {
+		PySys_WriteStdout("PsythonRenderer - Initializing...\n");
 		if (!gPsythonRendererCore) {
-			PySys_WriteStdout("PsythonRenderer - Failed to initialize, out of memory!\n");
-			Py_RETURN_FALSE;
+			gPsythonRendererCore.reset(new (std::nothrow) psy::PsythonRendererCore);
+			if (!gPsythonRendererCore) {
+				PySys_WriteStdout("PsythonRenderer - Failed to initialize, out of memory!\n");
+				Py_RETURN_FALSE;
+			}
+			if (!gPsythonRendererCore->initialize()) {
+				gPsythonRendererCore.reset();
+				PySys_WriteStdout("PsythonRenderer - Failed to initialize, %s!\n", SDL_GetError());
+				Py_RETURN_FALSE;
+			}
 		}
-		if (!gPsythonRendererCore->initialize()) {
+		PySys_WriteStdout("PsythonRenderer - Initialized\n");
+	}
+	Py_RETURN_TRUE;
+}
+
+void cleanup_(void* inSelf = nullptr) 
+{
+	if (gPsythonRendererCore) {
+		// if inSelf is not null, this means the module is unloading so we don't care about the init refcount
+		if (inSelf || (--gModuleInitializationRefCount == 0)) { 
+			PySys_WriteStdout("PsythonRenderer - Disposing...\n");
+			size_t lListenersCount = gPsythonRendererCore->getListenerCount();
+			for (size_t i = 0; i < lListenersCount; ++i) {
+				int32_t lListenerId = gPsythonRendererCore->getListenerIdByIndex(i);
+				void* lContext = gPsythonRendererCore->getCallbackContext(lListenerId);
+				if (lContext) {
+					Py_DECREF(static_cast<PyObject*>(lContext));
+				}
+			}
+			for (size_t i = 0; i < lListenersCount; ++i) {
+				int32_t lListenerId = gPsythonRendererCore->getListenerIdByIndex(i);
+				gPsythonRendererCore->removeListener(lListenerId);
+			}
 			gPsythonRendererCore.reset();
-			PySys_WriteStdout("PsythonRenderer - Failed to initialize, %s!\n", SDL_GetError());
-			Py_RETURN_FALSE;
+			PySys_WriteStdout("PsythonRenderer - Disposed\n");
 		}
 	}
-	PySys_WriteStdout("PsythonRenderer - Initialized\n");
-	Py_RETURN_TRUE;
+	if (inSelf) {
+		PyObject_Free(inSelf);
+		gModuleInitializationRefCount = 0;
+	}
 }
 
 PyObject* dispose_(PyObject*, PyObject*)
