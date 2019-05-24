@@ -65,7 +65,6 @@ public:
 	~PsythonRendererCore();
 	bool initialize();
 	void dispose();
-	int run(); 
 	
 	uint32_t createWindow();
 	psy::PsythonWindow* getWindowByUId(uint32_t inUId) const;

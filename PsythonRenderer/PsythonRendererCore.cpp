@@ -40,16 +40,6 @@ void PsythonRendererCore::dispose()
 	SDL_Quit();
 }
 
-int PsythonRendererCore::run() 
-{
-	mIsRunning = true;
-	while (mIsRunning) {
-		pumpNativeEvents();
-		SDL_Delay(16);
-	}
-	return 0;
-}
-
 uint32_t PsythonRendererCore::createWindow()
 {
 	for (size_t i = 0; i < MAX_WINDOW_COUNT; ++i) {

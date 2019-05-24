@@ -7,6 +7,7 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+#include <limits>
 
 namespace psy {
 
@@ -20,7 +21,7 @@ using PsythonEventCallback = void(*)(void* inContext, const PsythonEvent& inEven
 class PsythonEventNotifier
 {
 public:
-	enum : int32_t { INVALID_LISTENER_ID = INT32_MAX };
+	enum : int32_t { INVALID_LISTENER_ID = std::numeric_limits<int32_t>::max() };
 public:
 	int32_t addListener(int32_t inEventType, PsythonEventCallback inCallback, void* inContext);
 	void* getCallbackContext(int32_t inListenerId) const;

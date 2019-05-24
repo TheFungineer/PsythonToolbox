@@ -23,4 +23,4 @@ if os.name == 'posix' :
 		ctypes.cdll.LoadLibrary(osxSdlDllPath + "libsdl2.dylib")
 	
 from ._PsythonRenderApp import PsythonRenderApp
-from ._PsythonMouseButtons import PsythonMouseButtons
+from ._EPsythonMouseButtons import EPsythonMouseButtons

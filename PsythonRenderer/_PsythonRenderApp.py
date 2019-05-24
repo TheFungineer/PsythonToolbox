@@ -23,19 +23,21 @@ from ._PsythonRenderer import pumpNativeEvents
 
 import time
 
+
 class PsythonRenderApp:
+	INVALID_CALLBACK_ID = 2147483647 	# UINT32 MAX
 	def __init__(self):
 		self._isrunning = False
-		self._onQuitRequestedId = 2147483647
-		self._onWindowCloseRequestedId = 2147483647
-		self._onWindowVisibilityChangedId = 2147483647
-		self._onMouseMovedId = 2147483647
-		self._onWindowFocusChangedId = 2147483647
-		self._onWindowSizeChangedId = 2147483647
-		self._onMouseButtonDownId = 2147483647
-		self._onMouseButtonUpId = 2147483647
-		self._onKeyDownId = 2147483647
-		self._onKeyUpId = 2147483647
+		self._onQuitRequestedId = self.INVALID_CALLBACK_ID
+		self._onWindowCloseRequestedId = self.INVALID_CALLBACK_ID
+		self._onWindowVisibilityChangedId = self.INVALID_CALLBACK_ID
+		self._onMouseMovedId = self.INVALID_CALLBACK_ID
+		self._onWindowFocusChangedId = self.INVALID_CALLBACK_ID
+		self._onWindowSizeChangedId = self.INVALID_CALLBACK_ID
+		self._onMouseButtonDownId = self.INVALID_CALLBACK_ID
+		self._onMouseButtonUpId = self.INVALID_CALLBACK_ID
+		self._onKeyDownId = self.INVALID_CALLBACK_ID
+		self._onKeyUpId = self.INVALID_CALLBACK_ID
 		
 	def registerCallbacks(self):
 		self.unregisterCallbacks()
@@ -61,16 +63,16 @@ class PsythonRenderApp:
 		unregisterNativeEventCallback(self._onMouseButtonUpId)
 		unregisterNativeEventCallback(self._onKeyDownId)
 		unregisterNativeEventCallback(self._onKeyUpId)
-		self._onQuitRequestedId = 4294967295
-		self._onWindowCloseRequestedId = 4294967295
-		self._onWindowVisibilityChangedId = 4294967295
-		self._onMouseMovedId = 4294967295
-		self._onWindowFocusChangedId = 4294967295
-		self._onWindowSizeChangedId = 4294967295
-		self._onMouseButtonDownId = 4294967295
-		self._onMouseButtonUpId = 4294967295
-		self._onKeyDownId = 4294967295
-		self._onKeyUpId = 4294967295		
+		self._onQuitRequestedId = self.INVALID_CALLBACK_ID
+		self._onWindowCloseRequestedId = self.INVALID_CALLBACK_ID
+		self._onWindowVisibilityChangedId = self.INVALID_CALLBACK_ID
+		self._onMouseMovedId = self.INVALID_CALLBACK_ID
+		self._onWindowFocusChangedId = self.INVALID_CALLBACK_ID
+		self._onWindowSizeChangedId = self.INVALID_CALLBACK_ID
+		self._onMouseButtonDownId = self.INVALID_CALLBACK_ID
+		self._onMouseButtonUpId = self.INVALID_CALLBACK_ID
+		self._onKeyDownId = self.INVALID_CALLBACK_ID
+		self._onKeyUpId = self.INVALID_CALLBACK_ID		
 		
 	def run(self):
 		self._isrunning = True
