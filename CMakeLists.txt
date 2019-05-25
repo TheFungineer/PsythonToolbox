@@ -16,13 +16,13 @@ target_sources(_PsythonRenderer
 		PsythonRenderer/PsythonRendererCore.cpp
 		PsythonRenderer/PsythonEvent.hpp
 		PsythonRenderer/PsythonEvent.cpp
-		PsythonRenderer/PsythonScene2D.hpp
-		PsythonRenderer/PsythonScene2D.cpp
-		PsythonRenderer/Tools/StackAllocator.hpp
-		PsythonRenderer/Tools/StackAllocator.cpp
-		PsythonRenderer/Tools/MemoryPool.hpp
-		PsythonRenderer/Tools/MemoryPool.cpp
-		PsythonRenderer/Tools/Alignment.hpp
+		#PsythonRenderer/PsythonScene2D.hpp
+		#PsythonRenderer/PsythonScene2D.cpp
+		#PsythonRenderer/Tools/StackAllocator.hpp
+		#PsythonRenderer/Tools/StackAllocator.cpp
+		#PsythonRenderer/Tools/MemoryPool.hpp
+		#PsythonRenderer/Tools/MemoryPool.cpp
+		#PsythonRenderer/Tools/Alignment.hpp
 )       
 python_extension_module(_PsythonRenderer)
 target_link_libraries(_PsythonRenderer "${SDL2_LIB}")
@@ -32,3 +32,4 @@ if (MSVC)
 endif()
 
 install(TARGETS _PsythonRenderer LIBRARY DESTINATION PsythonRenderer)
+install(FILES $<TARGET_PDB_FILE:_PsythonRenderer> DESTINATION PsythonRenderer OPTIONAL)

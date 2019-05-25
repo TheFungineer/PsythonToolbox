@@ -3,7 +3,7 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT
 ##
-
+	
 import ctypes
 import os
 
@@ -16,11 +16,10 @@ if os.name == 'nt':
 		ctypes.cdll.LoadLibrary("msvcp140.dll")
 	except:
 		ctypes.cdll.LoadLibrary(msWinSdlDllPath + "\\3rdparty\\MsWinDependencies\\VCRedist\\msvcp140.dll")
-	
 if os.name == 'posix' :
 	if sys.platform == "darwin":
 		osxSdlDllPath = "/usr/local/lib/"
 		ctypes.cdll.LoadLibrary(osxSdlDllPath + "libsdl2.dylib")
-	
+
 from ._PsythonRenderApp import PsythonRenderApp
 from ._EPsythonMouseButtons import EPsythonMouseButtons
