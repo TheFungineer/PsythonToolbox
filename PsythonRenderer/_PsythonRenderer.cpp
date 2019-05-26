@@ -426,10 +426,12 @@ struct PyModuleDef PsythonRenderer_module_def = {
 
 /*////////////////////////////*/
 
-extern "C" PyMODINIT_FUNC PyInit__PsythonRenderer()
+extern "C" {
+PyMODINIT_FUNC PyInit__PsythonRenderer()
 {
 	if (PyType_Ready(psy::getPsythonWindowPyTypeObject()) < 0) {
-        return NULL;
+		return NULL;
 	}
 	return PyModule_Create(&PsythonRenderer_module_def);
 }
+} // extern "C"
