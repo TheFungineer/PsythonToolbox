@@ -427,7 +427,7 @@ struct PyModuleDef PsythonRenderer_module_def = {
 /*////////////////////////////*/
 
 extern "C" {
-PyMODINIT_FUNC PyInit__PsythonRenderer()
+PyObject _declspec(dllexport) *PyInit__PsythonRenderer()
 {
 	if (PyType_Ready(psy::getPsythonWindowPyTypeObject()) < 0) {
 		return NULL;

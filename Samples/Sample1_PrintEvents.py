@@ -5,10 +5,12 @@
 ##
 
 import sys
+import unittest
+
 from PsythonRenderer import PsythonRenderApp
 from PsythonRenderer import EPsythonMouseButtons
 
-class App(PsythonRenderApp):
+class SamplePrintEvents(PsythonRenderApp):
 	def onInitialize(self):
 		self.registerCallbacks()
 		self.win = self.createWindow()
@@ -81,8 +83,12 @@ class App(PsythonRenderApp):
 	
 	def onKeyUp(self, winId, keyname, scancode, withshift, withalt, withctrl):
 		print("keyup: ", keyname, scancode, withshift, withalt, withctrl)
-		
+	
+class LaunchSample(unittest.TestCase):
+	def testLaunch(self):
+		app = SamplePrintEvents()
+		app.run()
+		self.assertTrue(True)
 
-if __name__ == "__main__":
-    myapp = App()
-    myapp.run()
+if __name__ == '__main__':
+	unittest.main()	

@@ -1,7 +1,0 @@
-include LICENSE
-include MANIFEST.in
-include CMakeLists.txt
-include pyproject.toml
-include requirements.txt
-recursive-include PsythonRenderer *.cpp *.hpp
-recursive-include PsythonRenderer/3rdparty *.*

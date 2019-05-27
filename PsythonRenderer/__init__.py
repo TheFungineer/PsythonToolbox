@@ -3,19 +3,22 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT
 ##
-	
+
 import ctypes
 import os
+import sysconfig
+import sys
 
 if os.name == 'nt':
 	user32 = ctypes.windll.user32 
 	user32.SetProcessDPIAware()
-	msWinSdlDllPath = os.path.dirname(__file__)
+	msWinSdlDllPath = os.path.dirname(os.path.realpath(__file__))
 	ctypes.cdll.LoadLibrary(msWinSdlDllPath + "\\3rdparty\\MsWinDependencies\\SDL2-2.0.9\\lib\\SDL2.dll")
 	try:
 		ctypes.cdll.LoadLibrary("msvcp140.dll")
 	except:
 		ctypes.cdll.LoadLibrary(msWinSdlDllPath + "\\3rdparty\\MsWinDependencies\\VCRedist\\msvcp140.dll")
+
 if os.name == 'posix' :
 	if sys.platform == "darwin":
 		osxSdlDllPath = "/usr/local/lib/"
